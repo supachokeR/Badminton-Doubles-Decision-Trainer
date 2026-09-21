@@ -1,0 +1,64 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Badminton Doubles Tactical Game v3</title><script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif}.court{position:relative;aspect-ratio:13.4/6.1;background:#16845d;border:4px solid #e5e7eb;overflow:hidden}.ln{position:absolute;background:white;opacity:.92}.v{width:2px;top:0;bottom:0}.h{height:2px;left:0;right:0}.net{position:absolute;left:50%;top:0;bottom:0;width:4px;background:#111827;z-index:4}
+.p{position:absolute;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;border:3px solid white;transform:translate(-50%,-50%);transition:.5s ease;z-index:7;box-shadow:0 5px 12px #0007}.me{background:#2563eb}.op{background:#dc2626}.ball{position:absolute;font-size:27px;transform:translate(-50%,-50%);transition:.5s linear;z-index:9}.target{position:absolute;width:68px;height:68px;border:3px dashed #fde047;border-radius:50%;transform:translate(-50%,-50%);animation:p 1s infinite;z-index:5}@keyframes p{50%{opacity:.35;transform:translate(-50%,-50%) scale(1.18)}}.good{border-color:#34d399!important;background:#10b98118}.bad{border-color:#fb7185!important;background:#f43f5e18}
+</style></head><body class="bg-slate-950 text-slate-100 min-h-screen">
+<div class="max-w-7xl mx-auto p-4 md:p-7">
+<header class="mb-5"><div class="text-emerald-400 font-bold">Interactive Training Game · v3</div><h1 class="text-3xl md:text-4xl font-black">🏸 Badminton Doubles Decision Trainer</h1><p class="text-slate-400 mt-1">อ่านสถานการณ์ → เลือกช็อต → เลือกการเคลื่อนที่ → รับ Feedback → เล่น Rally ต่อ</p></header>
+<div class="grid xl:grid-cols-[1fr_390px] gap-5"><main>
+<div class="court rounded-2xl shadow-2xl" id="court">
+<div class="net"></div><div class="ln v" style="left:5%"></div><div class="ln v" style="left:95%"></div><div class="ln v" style="left:19%"></div><div class="ln v" style="left:81%"></div><div class="ln v" style="left:35%"></div><div class="ln v" style="left:65%"></div><div class="ln h" style="top:8%"></div><div class="ln h" style="top:50%"></div><div class="ln h" style="top:92%"></div>
+<div id="A" class="p me">A</div><div id="B" class="p me">B</div><div id="X" class="p op">X</div><div id="Y" class="p op">Y</div><div id="ball" class="ball">🏸</div><div id="target" class="target"></div></div>
+<div class="grid sm:grid-cols-3 gap-3 mt-4">
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><span class="text-xs text-slate-500">SCORE</span><div id="score" class="text-3xl font-black text-emerald-400">0</div></div>
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><span class="text-xs text-slate-500">STREAK</span><div id="streak" class="text-3xl font-black">0 🔥</div></div>
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><span class="text-xs text-slate-500">PROGRESS</span><div id="progress" class="text-3xl font-black">1/8</div></div></div>
+<div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 mt-4">
+<div class="flex justify-between gap-3"><h2 class="font-black text-xl">เลือกช็อตของคุณ</h2><span id="phase" class="text-xs px-3 py-1 bg-emerald-500/15 text-emerald-300 rounded-full"></span></div>
+<div id="shots" class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4"></div>
+<div class="border-t border-slate-800 mt-5 pt-5"><h3 class="font-bold">หลังตีแล้วควรเคลื่อนที่อย่างไร?</h3><div id="moves" class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3"></div></div>
+<button id="submit" class="mt-5 w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl disabled:opacity-40" disabled>ยืนยันการตัดสินใจ</button>
+</div></main>
+<aside class="space-y-4">
+<div class="bg-slate-900 border border-slate-800 rounded-2xl p-5"><div class="text-xs font-bold text-amber-400">สถานการณ์</div><h2 id="title" class="text-2xl font-black mt-2"></h2><p id="story" class="text-slate-300 mt-3 leading-relaxed"></p><div id="question" class="mt-4 p-3 bg-slate-800 rounded-xl font-bold"></div></div>
+<div id="feedback" class="hidden bg-slate-900 border rounded-2xl p-5"><h3 id="fbtitle" class="text-xl font-black"></h3><p id="fbtext" class="text-slate-300 mt-2"></p><div id="lesson" class="mt-4 bg-slate-800 p-3 rounded-xl text-amber-200 text-sm"></div><button id="next" class="w-full mt-4 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black">Rally ต่อไป →</button></div>
+<div class="bg-slate-900 border border-slate-800 rounded-2xl p-5"><h3 class="font-bold">กฎจำง่าย</h3><div class="text-sm text-slate-400 mt-3 space-y-2"><p>⚔️ <b class="text-white">บุก:</b> หน้า–หลัง</p><p>🛡️ <b class="text-white">รับ:</b> ซ้าย–ขวา</p><p>🔄 <b class="text-white">Rotation:</b> เติมพื้นที่ว่าง ไม่วิ่งตามคู่</p><p>🎯 <b class="text-white">เป้าหมาย:</b> ทำให้คู่แข่งตีลูกขึ้น</p></div></div>
+<button id="reset" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700">↺ เริ่มเกมใหม่</button>
+</aside></div></div>
+<script>
+const Q=[
+{phase:"SERVE",title:"จังหวะที่ 1 · คุณเป็นผู้เสิร์ฟ",story:"A เสิร์ฟจากคอร์ตหน้า B ยืนเยื้องด้านหลัง คู่แข่ง X เตรียมรับเสิร์ฟ",q:"ช็อตและตำแหน่งหลังเสิร์ฟที่เหมาะสมคือ?",shot:"เสิร์ฟสั้น",move:"คุมหน้า",lesson:"ประเภทคู่มักเสิร์ฟต่ำและสั้น A พร้อมคุมลูกหน้า ส่วน B ครอบคลุมลูกดันผ่าน",pos:[[42,38],[25,68],[58,40],[76,68],[42,38]],tar:[58,40]},
+{phase:"RETURN",title:"จังหวะที่ 2 · รับเสิร์ฟ",story:"X เสิร์ฟสั้นมาที่ A ลูกอยู่ต่ำใกล้ตาข่าย คุณต้องชิงเวลาโดยไม่ยกลูกง่ายเกินไป",q:"A ควรตอบสนองอย่างไร?",shot:"ดัน/Drive",move:"ตามขึ้นหน้า",lesson:"รับเสิร์ฟเร็วด้วย push/drive ไปพื้นที่ว่างสามารถกดคู่แข่งและสร้างโอกาสชิงการบุก",pos:[[41,35],[24,68],[59,36],[76,68],[50,35]],tar:[76,67]},
+{phase:"ATTACK",title:"จังหวะที่ 3 · ได้ลูกยก",story:"คู่แข่งยกลูกสูงมาด้านหลัง B ขณะที่ A อยู่หน้า ทีมคุณได้สิทธิ์โจมตี",q:"B ควรเล่นอะไรและทีมควรรักษารูปแบบใด?",shot:"Smash",move:"หน้า–หลัง",lesson:"เมื่อได้ลูกยก คนหลังโจมตีลง ส่วนคนหน้าคุม block/drive เพื่อรักษาการบุก",pos:[[40,47],[17,64],[69,34],[70,70],[17,64]],tar:[69,51]},
+{phase:"ATTACK",title:"จังหวะที่ 4 · คู่แข่งตั้งรับดี",story:"X/Y เปิดรับแบบซ้าย–ขวาและกำลังรอ smash แรง ลูกอยู่สูงด้านหลัง B",q:"ถ้าต้องการเปลี่ยนจังหวะโดยยังรักษาการบุก ควรเลือกอะไร?",shot:"Drop",move:"หน้า–หลัง",lesson:"ไม่จำเป็นต้อง smash ทุกลูก การ drop จากท่าทางเดียวกับ smash ช่วยเปลี่ยน tempo โดยคนหน้าต้องพร้อมปิดลูก",pos:[[41,46],[18,64],[70,33],[70,70],[18,64]],tar:[57,34]},
+{phase:"DEFENSE",title:"จังหวะที่ 5 · เสียการบุก",story:"คุณยกลูกไปให้ X และ X กำลังเตรียม smash จากด้านหลัง ตอนนี้รูปแบบหน้า–หลังไม่เหมาะแล้ว",q:"ทีม A/B ควรเปลี่ยนตำแหน่งอย่างไร?",shot:"เตรียมรับ",move:"ซ้าย–ขวา",lesson:"เมื่อคู่แข่งมีโอกาส smash ให้เปิด side-by-side เพื่อแบ่งความกว้างสนามและรับลูกลง",pos:[[29,31],[29,70],[78,36],[62,69],[78,36]],tar:[29,31]},
+{phase:"DEFENSE",title:"จังหวะที่ 6 · รับ Smash",story:"X smash มาที่ A ลูกอยู่ต่ำ แต่ A ควบคุมหน้าไม้ได้ดี",q:"ทางเลือกใดมีโอกาสเปลี่ยนจากรับเป็นบุก?",shot:"Block สั้น",move:"ตามขึ้นหน้า",lesson:"block สั้นที่มีคุณภาพบังคับผู้โจมตีให้เคลื่อนขึ้นหน้า และอาจบังคับให้ยก เปิดโอกาส rotation",pos:[[29,31],[29,70],[77,36],[63,70],[29,31]],tar:[55,31]},
+{phase:"ROTATION",title:"จังหวะที่ 7 · A ขึ้นหน้าแล้ว",story:"A block แล้วตามขึ้นหน้า X ต้องยกลูกกลับด้านหลัง ทีมคุณกำลังเปลี่ยนจากรับเป็นบุก",q:"B ควรทำอย่างไร?",shot:"เตรียมโจมตี",move:"เติมด้านหลัง",lesson:"Rotation คือเติมพื้นที่ว่าง เมื่อ A ครองหน้า B ต้องเข้าใต้ลูกด้านหลังเพื่อสร้างหน้า–หลัง",pos:[[41,36],[20,66],[64,35],[72,70],[25,65]],tar:[20,66]},
+{phase:"TACTICS",title:"จังหวะที่ 8 · ปิด Rally",story:"B ได้ลูกสูงพร้อม smash A คุมหน้า X/Y ยืนรับซ้าย–ขวาและมีช่องระหว่างกลาง",q:"เป้าหมายโจมตีที่มีเหตุผลคือ?",shot:"Smash กลาง",move:"A ดักหน้า",lesson:"โจมตีช่องกลาง/ลำตัวช่วยลดมุมสวนและอาจสร้างความลังเล ขณะที่คนหน้าพร้อมตัดลูกคืนสั้น",pos:[[42,45],[18,63],[69,34],[70,70],[18,63]],tar:[69,51]}
+];
+const shots=["เสิร์ฟสั้น","เสิร์ฟยาว","ดัน/Drive","ยก/Clear","Smash","Drop","เตรียมรับ","Block สั้น","เตรียมโจมตี","Smash กลาง"];
+const moves=["คุมหน้า","ถอยหลัง","ตามขึ้นหน้า","หน้า–หลัง","ซ้าย–ขวา","ยืนที่เดิม","เติมด้านหลัง","A ดักหน้า"];
+let i=0,score=0,streak=0,ss=null,mm=null;
+const $=x=>document.getElementById(x), pe=["A","B","X","Y"].map($);
+function pos(el,a){el.style.left=a[0]+"%";el.style.top=a[1]+"%"}
+function render(){
+ let x=Q[i];ss=mm=null;$("title").textContent=x.title;$("story").textContent=x.story;$("question").textContent=x.q;$("phase").textContent=x.phase;$("progress").textContent=(i+1)+"/"+Q.length;
+ x.pos.slice(0,4).forEach((p,j)=>pos(pe[j],p));pos($("ball"),x.pos[4]);pos($("target"),x.tar);
+ $("feedback").classList.add("hidden");$("submit").disabled=true;
+ let so=[x.shot,...shots.filter(a=>a!==x.shot).sort(()=>.5-Math.random()).slice(0,3)].sort(()=>.5-Math.random());
+ let mo=[x.move,...moves.filter(a=>a!==x.move).sort(()=>.5-Math.random()).slice(0,3)].sort(()=>.5-Math.random());
+ $("shots").innerHTML=so.map(a=>`<button class="shot bg-slate-800 hover:bg-slate-700 border border-slate-700 p-3 rounded-xl font-bold" data-v="${a}">${a}</button>`).join("");
+ $("moves").innerHTML=mo.map(a=>`<button class="move bg-slate-800 hover:bg-slate-700 border border-slate-700 p-3 rounded-xl font-bold" data-v="${a}">${a}</button>`).join("");
+ document.querySelectorAll(".shot").forEach(b=>b.onclick=()=>select("shot",b));
+ document.querySelectorAll(".move").forEach(b=>b.onclick=()=>select("move",b));
+}
+function select(type,b){document.querySelectorAll("."+type).forEach(z=>z.classList.remove("ring-2","ring-emerald-400"));b.classList.add("ring-2","ring-emerald-400");if(type==="shot")ss=b.dataset.v;else mm=b.dataset.v;$("submit").disabled=!(ss&&mm)}
+$("submit").onclick=()=>{let x=Q[i],a=ss===x.shot,b=mm===x.move,pts=(a?50:0)+(b?50:0);score+=pts;if(pts===100)streak++;else streak=0;$("score").textContent=score;$("streak").textContent=streak+" 🔥";
+$("feedback").classList.remove("hidden");$("feedback").classList.toggle("good",pts===100);$("feedback").classList.toggle("bad",pts<100);
+$("fbtitle").textContent=pts===100?"✓ ถูกต้อง +100":pts===50?"เกือบถูก +50":"ลองวิเคราะห์ Formation ใหม่";
+$("fbtext").innerHTML=`ช็อต: <b>${ss}</b> ${a?"✓":"→ แนะนำ "+x.shot}<br>การเคลื่อนที่: <b>${mm}</b> ${b?"✓":"→ แนะนำ "+x.move}`;$("lesson").innerHTML="<b>เหตุผล:</b> "+x.lesson;
+document.querySelectorAll(".shot,.move").forEach(z=>z.disabled=true);$("submit").disabled=true;$("next").textContent=i===Q.length-1?"ดูผลเกม →":"Rally ต่อไป →"};
+$("next").onclick=()=>{if(i<Q.length-1){i++;render()}else{alert(`จบเกม! คะแนน ${score}/${Q.length*100}\\nตอบสมบูรณ์ต่อเนื่องสูงสุดในช่วงท้าย ${streak} ครั้ง`)}};
+$("reset").onclick=()=>{i=score=streak=0;$("score").textContent=0;$("streak").textContent="0 🔥";render()};render();
+</script></body></html>
